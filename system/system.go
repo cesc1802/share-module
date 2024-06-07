@@ -8,20 +8,22 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/cesc1802/share-module/config"
+	"github.com/cesc1802/share-module/tokprovider"
+	"github.com/cesc1802/share-module/waiter"
 	"github.com/gin-gonic/gin"
 	"github.com/pressly/goose/v3"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"share-module/config"
-	"share-module/waiter"
 )
 
 type System struct {
-	cfg    config.AppConfig
-	db     *gorm.DB
-	router *gin.Engine
-	waiter waiter.Waiter
+	cfg         config.AppConfig
+	db          *gorm.DB
+	router      *gin.Engine
+	waiter      waiter.Waiter
+	tokProvider tokprovider.TokenProvider
 }
 
 func newSystem(cfg config.AppConfig) *System {
@@ -143,4 +145,8 @@ func (s *System) MigrateDB(fs fs.FS) error {
 	}
 
 	return nil
+}
+
+func (s *System) TokenProvider() tokprovider.TokenProvider {
+	return s.tokProvider
 }
