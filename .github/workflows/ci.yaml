@@ -6,18 +6,21 @@ on:
   pull_request:
     branch: ["master"]
 
-job:
-  build:
+permissions:
+  contents: read
+  # Optional: allow read access to pull request. Use with `only-new-issues` option.
+  # pull-requests: read
+
+jobs:
+  golangci-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - uses: actions/setup-go@v4
         with:
           go-version: '1.22.5'
 
       - name: Run Golang Lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.50.0
-          args: --timeout=10m
+          version: v1.59

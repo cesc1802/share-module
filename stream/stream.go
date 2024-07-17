@@ -39,7 +39,7 @@ func NewConcurrent[T any](vals ...T) (_ <-chan T, _push func(context.Context, ..
 	var closed bool
 	out := make(chan T, len(vals))
 	push := Concurrent(out)
-	push(context.Background(), vals...)
+	_ = push(context.Background(), vals...)
 	return out, push, func() {
 		mux.Lock()
 		defer mux.Unlock()
