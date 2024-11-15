@@ -11,7 +11,8 @@ type AppToken struct {
 }
 
 type AppPayload struct {
-	UserID string `json:"user_id"`
+	UserID         string `json:"user_id"`
+	RefreshTokenID string `json:"refresh_token_id"`
 	jwt.RegisteredClaims
 }
 

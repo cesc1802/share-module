@@ -32,6 +32,7 @@ func (wc WebConfig) Address() string {
 
 type AppConfig struct {
 	Env             string        `mapstructure:"ENV"`
+	TokenSecret     string        `mapstructure:"TOKEN_SECRET"`
 	ShutdownTimeout time.Duration `mapstructure:"SHUTDOWN_TIMEOUT"`
 	Web             WebConfig     `mapstructure:"WEB"`
 	DB              DBConfig      `mapstructure:"DB"`

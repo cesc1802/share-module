@@ -10,8 +10,11 @@ import (
 
 	"github.com/cesc1802/share-module/config"
 	"github.com/cesc1802/share-module/tokprovider"
+	"github.com/cesc1802/share-module/tokprovider/appjwt"
 	"github.com/cesc1802/share-module/waiter"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/pressly/goose/v3"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/driver/postgres"
@@ -31,6 +34,7 @@ func newSystem(cfg config.AppConfig) *System {
 
 	sys.initWaiter()
 	sys.initGin()
+	sys.initTokenProvider()
 
 	if err := sys.initDB(); err != nil {
 		log.Fatalln("database cannot start: ", err)
@@ -56,6 +60,10 @@ func New(cfg config.AppConfig, action string) *System {
 	return newSystem(cfg)
 }
 
+func (s *System) initTokenProvider() {
+	s.tokProvider = appjwt.NewJwtProvider(s.cfg.TokenSecret)
+}
+
 func (s *System) initWaiter() {
 	s.waiter = waiter.New(waiter.CatchSignals())
 }
@@ -65,6 +73,11 @@ func (s *System) initGin() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	s.router = gin.New()
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterTagNameFunc(JsonTagNameFunc)
+	}
+	s.router.RedirectTrailingSlash = true
+	s.router.RedirectFixedPath = true
 }
 
 func (s *System) initDB() error {

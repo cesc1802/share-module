@@ -40,7 +40,6 @@ func (p *jwtProvider) Extract(token string) (common.Requester, error) {
 }
 
 func (p *jwtProvider) Generate(payload *tokprovider.AppPayload, expiryInSecond int64) (*tokprovider.AppToken, error) {
-
 	payload.IssuedAt = jwt.NewNumericDate(time.Now().Local())
 	payload.ExpiresAt = jwt.NewNumericDate(time.Now().Local().Add(time.Second * time.Duration(expiryInSecond)))
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
